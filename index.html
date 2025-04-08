@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Jeu d'échecs - CSRG</title>
+  <!-- Bibliothèques JS/CSS nécessaires -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard.min.css" />
+  <style>
+    #board {
+      width: 400px;
+      margin: 20px auto;
+    }
+    #status {
+      text-align: center;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Jeu d'échecs CSRG (niveau facile)</h2>
+  <div id="board"></div>
+  <div id="status"></div>
+
+  <script>
+    const boardElement = document.getElementById("board");
+    const statusElement = document.getElementById("status");
+    const game = new Chess();
+
+    const config = {
+      draggable: true,
+      position: 'start',
+      onDrop: (source, target) => {
+        const move = game.move({ from: source, to: target, promotion: 'q' });
+
+        if (move === null) return 'snapback';
+
+        updateStatus();
+        setTimeout(makeRandomMove, 250); // L'ordi joue après 250ms
+      }
+    };
+
+    const board = Chessboard("board", config);
+
+    function makeRandomMove() {
+      if (game.game_over()) return;
+
+      const possibleMoves = game.moves();
+      const move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+      game.move(move);
+      board.position(game.fen());
+      updateStatus();
+    }
+
+    function updateStatus() {
+      let status = '';
+
+      if (game.in_checkmate()) {
+        status = 'Fin de la partie - ' + (game.turn() === 'w' ? 'Noir' : 'Blanc') + ' a gagné';
+      } else if (game.in_draw()) {
+        status = 'Match nul';
+      } else {
+        status = "Au tour de " + (game.turn() === 'w' ? 'Blanc' : 'Noir');
+        if (game.in_check()) status += ' - Échec !';
+      }
+
+      statusElement.textContent = status;
+    }
+
+    updateStatus();
+  </script>
+</body>
+</html>
