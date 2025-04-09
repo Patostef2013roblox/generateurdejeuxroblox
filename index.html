@@ -10,10 +10,11 @@
             text-align: center;
             margin: 20px;
             background: linear-gradient(to bottom, #002f4b, #0066cc); /* Dégradé bleu foncé vers bleu clair */
-            color: white; /* Rendre le texte visible sur le fond sombre */
+            color: white;
         }
         #board {
             display: inline-block;
+            margin-top: 20px;
         }
         button {
             margin-top: 20px;
@@ -35,11 +36,11 @@
 <body>
     <h1>Jouer aux Échecs contre l'IA</h1>
     <div id="board" style="width: 400px;"></div>
-    <button onclick="resetGame()">Réinitialiser le jeu</button>
+    <button onclick="abandonGame()">Abandonner la partie</button>
 
     <script>
-        const boardElement = document.getElementById("board");
         const chess = new Chess();
+        const boardElement = document.getElementById("board");
         const board = Chessboard(boardElement, {
             position: 'start',
             draggable: true,
@@ -52,15 +53,18 @@
             let move = chess.move({
                 from: source,
                 to: target,
-                promotion: 'q'
+                promotion: 'q' // promotion automatique
             });
 
             if (move === null) return 'snapback';
 
             board.position(chess.fen());
 
+            // Tour de l'IA
             if (!chess.isGameOver()) {
                 setTimeout(() => playAI(), 500);
+            } else {
+                endGame();
             }
         }
 
@@ -73,11 +77,23 @@
                     let bestMove = event.data.split(' ')[1];
                     chess.move(bestMove);
                     board.position(chess.fen());
+                    if (chess.isGameOver()) {
+                        endGame();
+                    }
                 }
             };
         }
 
-        function resetGame() {
+        function endGame() {
+            alert("Partie terminée !");
+            setTimeout(() => {
+                chess.reset();
+                board.position('start');
+            }, 3000); // Réinitialisation après 3 secondes
+        }
+
+        function abandonGame() {
+            alert("Vous avez abandonné la partie.");
             chess.reset();
             board.position('start');
         }
