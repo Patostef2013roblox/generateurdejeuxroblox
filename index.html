@@ -3,15 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Échecs contre IA</title>
+    <title>Échecs contre IA 1000 ELO</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 20px;
+            background: linear-gradient(to bottom, #002f4b, #0066cc); /* Dégradé bleu foncé vers bleu clair */
+            color: white; /* Rendre le texte visible sur le fond sombre */
         }
         #board {
             display: inline-block;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0059b3;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
@@ -34,20 +49,16 @@
         let stockfish = new Worker('https://cdn.jsdelivr.net/npm/stockfish/src/stockfish.js');
 
         function onDrop(source, target) {
-            // Essayer de faire le coup
             let move = chess.move({
                 from: source,
                 to: target,
-                promotion: 'q' // promotion automatique
+                promotion: 'q'
             });
 
-            // Vérifier si le coup est légal
             if (move === null) return 'snapback';
 
-            // Afficher le coup
             board.position(chess.fen());
 
-            // Tour de l'IA
             if (!chess.isGameOver()) {
                 setTimeout(() => playAI(), 500);
             }
