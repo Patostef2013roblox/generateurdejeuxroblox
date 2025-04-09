@@ -1,71 +1,75 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Jeu d'échecs </title>
-  <!-- Bibliothèques Chess.js et Chessboard.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard.min.css" />
-  <style>
-    #board {
-      width: 400px;
-      margin: 20px auto;
-    }
-    #status {
-      text-align: center;
-      font-size: 18px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Échecs contre IA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #board {
+            display: inline-block;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 </head>
 <body>
-  <h2 style="text-align:center;">Jeu d'échecs CSRG (niveau facile)</h2>
-  <div id="board"></div>
-  <div id="status"></div>
+    <h1>Jouer aux Échecs contre l'IA</h1>
+    <div id="board" style="width: 400px;"></div>
+    <button onclick="resetGame()">Réinitialiser le jeu</button>
 
-  <script>
-    const statusElement = document.getElementById("status");
-    const game = new Chess();
+    <script>
+        const boardElement = document.getElementById("board");
+        const chess = new Chess();
+        const board = Chessboard(boardElement, {
+            position: 'start',
+            draggable: true,
+            onDrop: onDrop
+        });
 
-    const board = Chessboard("board", {
-      draggable: true,
-      position: 'start',
-      onDrop: (source, target) => {
-        const move = game.move({ from: source, to: target, promotion: 'q' });
+        let stockfish = new Worker('https://cdn.jsdelivr.net/npm/stockfish/src/stockfish.js');
 
-        if (move === null) return 'snapback';
+        function onDrop(source, target) {
+            // Essayer de faire le coup
+            let move = chess.move({
+                from: source,
+                to: target,
+                promotion: 'q' // promotion automatique
+            });
 
-        updateStatus();
-        setTimeout(makeRandomMove, 250);
-      }
-    });
+            // Vérifier si le coup est légal
+            if (move === null) return 'snapback';
 
-    function makeRandomMove() {
-      if (game.game_over()) return;
+            // Afficher le coup
+            board.position(chess.fen());
 
-      const possibleMoves = game.moves();
-      const move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-      game.move(move);
-      board.position(game.fen());
-      updateStatus();
-    }
+            // Tour de l'IA
+            if (!chess.isGameOver()) {
+                setTimeout(() => playAI(), 500);
+            }
+        }
 
-    function updateStatus() {
-      let status = '';
+        function playAI() {
+            stockfish.postMessage('position fen ' + chess.fen());
+            stockfish.postMessage('go');
 
-      if (game.in_checkmate()) {
-        status = 'Fin de la partie - ' + (game.turn() === 'w' ? 'Noir' : 'Blanc') + ' a gagné';
-      } else if (game.in_draw()) {
-        status = 'Match nul';
-      } else {
-        status = "Au tour de " + (game.turn() === 'w' ? 'Blanc' : 'Noir');
-        if (game.in_check()) status += ' - Échec !';
-      }
+            stockfish.onmessage = function(event) {
+                if (event.data.startsWith('bestmove')) {
+                    let bestMove = event.data.split(' ')[1];
+                    chess.move(bestMove);
+                    board.position(chess.fen());
+                }
+            };
+        }
 
-      statusElement.textContent = status;
-    }
-
-    updateStatus();
-  </script>
+        function resetGame() {
+            chess.reset();
+            board.position('start');
+        }
+    </script>
 </body>
 </html>
