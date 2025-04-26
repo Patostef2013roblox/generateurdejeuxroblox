@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Générateur d'objets 3D Roblox</title>
+  <title>IA Générative Roblox</title>
   <style>
     body {
       margin: 0;
@@ -12,9 +12,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(to bottom, #80b3ff, #004b87); /* Dégradé du bleu clair au bleu foncé */
-      color: white;
+      background: linear-gradient(to bottom, #80b3ff, #004b87);
       font-family: Arial, sans-serif;
+      color: white;
     }
 
     .container {
@@ -60,7 +60,6 @@
       width: 100%;
       height: 400px;
       border-radius: 5px;
-      display: block;
     }
 
     #downloadBtn {
@@ -71,7 +70,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Générateur d'objets 3D Roblox</h1>
+    <h1>IA Générative Roblox</h1>
     <input type="text" id="description" placeholder="Décris ton objet (ex: cube rouge)">
     <button id="generateBtn">Générer l'aperçu</button>
     <canvas id="3dPreview"></canvas>
@@ -97,16 +96,19 @@
     function createObject(description) {
       let object;
       
+      // Logique basique pour comprendre certaines descriptions
       if (description.includes("cube")) {
         object = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
       } else if (description.includes("sphère")) {
         object = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), new THREE.MeshBasicMaterial({ color: 0x0000ff }));
-      } else {
-        alert("Objet non reconnu. Essaie 'cube' ou 'sphère'.");
-        return;
       }
       
-      scene.add(object);
+      // Ajout de l'objet à la scène
+      if (object) {
+        scene.add(object);
+      } else {
+        alert("Objet non reconnu. Essaie 'cube' ou 'sphère'.");
+      }
     }
 
     generateBtn.addEventListener('click', () => {
