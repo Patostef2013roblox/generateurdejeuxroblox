@@ -5,24 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Générateur d'objets 3D Roblox</title>
   <style>
-    /* Global styles */
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(to bottom, #80b3ff, #004b87); /* Dégradé de bleu */
+      background: linear-gradient(to bottom, #80b3ff, #004b87); /* Dégradé du bleu clair au bleu foncé */
       color: white;
+      font-family: Arial, sans-serif;
     }
 
-    /* Container for the whole content */
     .container {
       text-align: center;
       padding: 20px;
-      background-color: rgba(0, 0, 0, 0.7); /* Fond sombre pour contraste */
+      background-color: rgba(0, 0, 0, 0.7);
       border-radius: 10px;
       width: 80%;
       max-width: 600px;
@@ -33,7 +31,6 @@
       margin-bottom: 20px;
     }
 
-    /* Styling for the input field */
     input[type="text"] {
       width: 80%;
       padding: 10px;
@@ -43,7 +40,6 @@
       margin-bottom: 10px;
     }
 
-    /* Styling for the buttons */
     button {
       padding: 10px 20px;
       font-size: 1em;
@@ -52,25 +48,24 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s;
-      margin: 10px;
+      margin-top: 10px;
     }
 
     button:hover {
       background-color: #004080;
     }
 
-    /* 3D preview canvas */
     canvas {
+      margin-top: 20px;
       width: 100%;
       height: 400px;
-      margin-top: 20px;
       border-radius: 5px;
+      display: block;
     }
 
-    /* Hidden button for download */
     #downloadBtn {
       display: none;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -85,48 +80,42 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // app.js
     const generateBtn = document.getElementById('generateBtn');
     const descriptionField = document.getElementById('description');
-    const previewContainer = document.getElementById('previewContainer');
     const downloadBtn = document.getElementById('downloadBtn');
-
+    const canvas = document.getElementById('3dPreview');
+    
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('3dPreview') });
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    previewContainer.appendChild(renderer.domElement);
-
+    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+    
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
-
+    
     function createObject(description) {
       let object;
-
+      
       if (description.includes("cube")) {
         object = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
       } else if (description.includes("sphère")) {
         object = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), new THREE.MeshBasicMaterial({ color: 0x0000ff }));
       } else {
-        // Si rien n'est trouvé, affiche un message d'erreur
-        alert("Objet non reconnu, essaie avec 'cube' ou 'sphère'.");
+        alert("Objet non reconnu. Essaie 'cube' ou 'sphère'.");
         return;
       }
-
-      object.position.set(0, 0, 0);
+      
       scene.add(object);
     }
 
     generateBtn.addEventListener('click', () => {
       const description = descriptionField.value.toLowerCase();
-      scene.clear(); // Nettoie la scène avant de redessiner
+      scene.clear(); // Nettoie la scène
       createObject(description);
-
-      // Positionnement de la caméra
+      
       camera.position.z = 5;
 
-      // Fonction d'animation
       function animate() {
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
@@ -134,7 +123,7 @@
 
       animate();
 
-      // Affichage du bouton de téléchargement
+      // Afficher le bouton de téléchargement
       downloadBtn.style.display = 'block';
     });
 
