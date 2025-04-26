@@ -4,7 +4,6 @@ const descriptionField = document.getElementById('description');
 const previewContainer = document.getElementById('3dPreview');
 const downloadBtn = document.getElementById('downloadBtn');
 
-// Configurer la scène, la caméra et le rendu
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ canvas: previewContainer });
@@ -14,7 +13,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 const light = new THREE.AmbientLight(0xffffff); // Lumière ambiante
 scene.add(light);
 
-// Fonction pour créer un objet en fonction de la description
 function createObject(description) {
   let object;
   if (description.includes("cube")) {
@@ -27,11 +25,10 @@ function createObject(description) {
   scene.add(object);
 }
 
-// Lorsque le bouton "Générer" est cliqué
 generateBtn.addEventListener('click', () => {
   const description = descriptionField.value.toLowerCase();
-  scene.clear(); // Nettoyer la scène
-  createObject(description); // Créer l'objet basé sur la description
+  scene.clear(); // Nettoyer la scène avant de redessiner
+  createObject(description);
 
   // Positionner la caméra
   camera.position.z = 5;
@@ -48,7 +45,6 @@ generateBtn.addEventListener('click', () => {
   downloadBtn.style.display = 'block';
 });
 
-// Fonction pour télécharger un fichier (à compléter selon tes besoins)
 downloadBtn.addEventListener('click', () => {
   alert("Fichier .rbxl généré et prêt à être téléchargé !");
 });
