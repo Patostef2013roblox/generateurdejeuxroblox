@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IA Générateur d'Objets Roblox</title>
+  <title>Générateur de Map</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Générateur d'Objets Roblox</h1>
-    <textarea id="description" placeholder="Entrez la description d'un objet ici"></textarea>
+    <h1>Générateur de Map Roblox</h1>
+    <textarea id="description" placeholder="Décris ce que tu veux créer : ex: 'un cube vert'"></textarea>
+    <br>
     <button id="generateBtn">Générer</button>
-    <button id="downloadBtn" style="display:none;">Télécharger</button>
+    <br><br>
+    <button id="downloadBtn" style="display: none;">Télécharger le fichier .rbxl</button>
     <div id="previewContainer">
       <canvas id="3dPreview"></canvas>
     </div>
   </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="app.js"></script>
 </body>
