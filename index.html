@@ -3,16 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Générateur 3D Roblox</title>
+  <title>IA Générateur d'Objets Roblox</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="container">
-    <input type="text" id="description" placeholder="Entrez la description de l'objet 3D">
+  <div class="container">
+    <h1>Générateur d'Objets Roblox</h1>
+    <textarea id="description" placeholder="Entrez la description d'un objet ici"></textarea>
     <button id="generateBtn">Générer</button>
-    <button id="downloadBtn" style="display:none;">Télécharger le fichier .rbxl</button>
+    <button id="downloadBtn" style="display:none;">Télécharger</button>
+    <div id="previewContainer">
+      <canvas id="3dPreview"></canvas>
+    </div>
   </div>
-  <canvas id="3dPreview"></canvas>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="app.js"></script>
 </body>
