@@ -1,102 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Échecs contre IA 1000 ELO</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-            background: linear-gradient(to bottom, #002f4b, #0066cc); /* Dégradé bleu foncé vers bleu clair */
-            color: white;
-        }
-        #board {
-            display: inline-block;
-            margin-top: 20px;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #004080;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0059b3;
-        }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créateur de jeux Roblox</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #previewContainer {
+      width: 100%;
+      height: 400px;
+      margin: 20px 0;
+    }
+    #generateBtn {
+      padding: 10px 20px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Jouer aux Échecs contre l'IA</h1>
-    <div id="board" style="width: 400px;"></div>
-    <button onclick="abandonGame()">Abandonner la partie</button>
+  <h1>Générateur de jeux Roblox à partir de description</h1>
+  
+  <textarea id="description" placeholder="Décris ce que tu veux générer (ex: 'un cube rouge, une sphère bleue en verre')"></textarea>
+  <br>
+  <button id="generateBtn">Générer l'aperçu</button>
 
-    <script>
-        const chess = new Chess();
-        const boardElement = document.getElementById("board");
-        const board = Chessboard(boardElement, {
-            position: 'start',
-            draggable: true,
-            onDrop: onDrop
-        });
+  <div id="previewContainer">
+    <canvas id="3dPreview"></canvas>
+  </div>
+  
+  <button id="downloadBtn" style="display:none;">Télécharger le fichier .rbxl</button>
 
-        let stockfish = new Worker('https://cdn.jsdelivr.net/npm/stockfish/src/stockfish.js');
-
-        function onDrop(source, target) {
-            let move = chess.move({
-                from: source,
-                to: target,
-                promotion: 'q' // promotion automatique
-            });
-
-            if (move === null) return 'snapback';
-
-            board.position(chess.fen());
-
-            // Tour de l'IA
-            if (!chess.isGameOver()) {
-                setTimeout(() => playAI(), 500);
-            } else {
-                endGame();
-            }
-        }
-
-        function playAI() {
-            stockfish.postMessage('position fen ' + chess.fen());
-            stockfish.postMessage('go');
-
-            stockfish.onmessage = function(event) {
-                if (event.data.startsWith('bestmove')) {
-                    let bestMove = event.data.split(' ')[1];
-                    chess.move(bestMove);
-                    board.position(chess.fen());
-                    if (chess.isGameOver()) {
-                        endGame();
-                    }
-                }
-            };
-        }
-
-        function endGame() {
-            alert("Partie terminée !");
-            setTimeout(() => {
-                chess.reset();
-                board.position('start');
-            }, 3000); // Réinitialisation après 3 secondes
-        }
-
-        function abandonGame() {
-            alert("Vous avez abandonné la partie.");
-            chess.reset();
-            board.position('start');
-        }
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
